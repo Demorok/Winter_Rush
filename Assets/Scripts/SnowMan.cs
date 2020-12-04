@@ -16,7 +16,8 @@ public class SnowMan : MonoBehaviour
 
     Rigidbody2D snowman;
 
-    // Start is called before the first frame update
+    public int score { get; private set; }
+
     void Start()
     {
         snowman = transform.GetComponent<Rigidbody2D>();
@@ -24,7 +25,6 @@ public class SnowMan : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         Player_Controller();
@@ -51,5 +51,10 @@ public class SnowMan : MonoBehaviour
             snowman.AddForce(leftImpulse * impulsePower, ForceMode2D.Impulse);
         else if (Input.GetKeyDown(right))
             snowman.AddForce(rightImpulse * impulsePower, ForceMode2D.Impulse);
+    }
+
+    public void Collect_Bonus(int value)
+    {
+        this.score += value;
     }
 }
