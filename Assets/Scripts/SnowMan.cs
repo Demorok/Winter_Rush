@@ -15,6 +15,7 @@ public class SnowMan : MonoBehaviour
     Vector2 rightImpulse;
 
     Rigidbody2D snowman;
+    EventManager em;
 
     public int score { get; private set; }
 
@@ -28,6 +29,7 @@ public class SnowMan : MonoBehaviour
     void Update()
     {
         Player_Controller();
+        em.Update_Score(score);
     }
 
     void Calculate_Impulses()
@@ -56,5 +58,16 @@ public class SnowMan : MonoBehaviour
     public void Collect_Bonus(int value)
     {
         this.score += value;
+    }
+
+    public void Connect_With_EventManager(EventManager em)
+    {
+        this.em = em;
+    }
+
+    private void OnDestroy()
+    {
+        em.End_Game(score);
+        GameUtility.End_Game();
     }
 }

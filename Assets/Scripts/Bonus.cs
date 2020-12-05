@@ -23,7 +23,7 @@ public class Bonus : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void Connect_With_Manager(SpawnManager sm, int id)
+    public void Connect_With_SpawnManager(SpawnManager sm, int id)
     {
         this.sm = sm;
         this.id = id;
