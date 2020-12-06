@@ -9,7 +9,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] float bonusSpawnCooldown;
     [SerializeField] EventManager em;
     [SerializeField] Transform playerSpawn;
-    //[SerializeField] Transform [] enemySpawn;
+    [SerializeField] Transform [] enemySpawns;
     [SerializeField] Transform[] bonusSpawns;
     [SerializeField] Text scoreText;
 
@@ -17,6 +17,7 @@ public class SpawnManager : MonoBehaviour
     List<int> unoccupied = new List<int>();
 
     SnowMan player;
+    Transform target;
 
     float timeToSpawn = 0;
     int activeBonuses = 0;
@@ -38,8 +39,17 @@ public class SpawnManager : MonoBehaviour
 
     void Spawn_Player()
     {
-        player = Instantiate(ResourceLoader.PLAYER, playerSpawn).GetComponent<SnowMan>();
+        GameObject clone = Instantiate(ResourceLoader.PLAYER, playerSpawn);
+        target = clone.GetComponent<Transform>();
+        player = clone.GetComponent<SnowMan>();
         player.Connect_With_EventManager(em);
+        em.Connect_With_Player(clone);
+    }
+
+    public void Spawn_Enemy()
+    {
+        GameObject clone = Instantiate(ResourceLoader.ENEMY, enemySpawns[Random.Range(0, enemySpawns.Length)]);
+        clone.GetComponent<EvilSnowMan>().Get_Target(target);
     }
 
     void Spawn_Bonus()
