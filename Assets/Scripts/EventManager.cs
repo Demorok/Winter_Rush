@@ -18,11 +18,6 @@ public class EventManager : MonoBehaviour
 
     public int score { get; private set; }
 
-    void Start()
-    {
-
-    }
-
 
     void Update()
     {
@@ -31,11 +26,20 @@ public class EventManager : MonoBehaviour
 
     void Difficulty_Control()
     {
-        if (spawnedEnemies < enemiesOnNormal)
-        {
-            sm.Spawn_Enemy();
-            ++spawnedEnemies;
-        }
+        if (score > EASY)
+            if (score <= NORMAL)
+                if (spawnedEnemies < enemiesOnNormal)
+                {
+                    sm.Spawn_Enemy();
+                    ++spawnedEnemies;
+                }
+        if(score>NORMAL)
+            if (score <= HARD)
+                if (spawnedEnemies < enemiesOnHard)
+                {
+                    sm.Spawn_Enemy();
+                    ++spawnedEnemies;
+                }
     }
     public void Update_Score(int score)
     {

@@ -13,8 +13,11 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] Transform[] bonusSpawns;
     [SerializeField] Text scoreText;
 
-    List<int> occupied = new List<int>();
-    List<int> unoccupied = new List<int>();
+    List<int> bonusOccupied = new List<int>();
+    List<int> bonusUnoccupied = new List<int>();
+
+    List<int> enemyOccupied = new List<int>();
+    List<int> enemyUnoccupied = new List<int>();
 
     SnowMan player;
     Transform target;
@@ -27,7 +30,9 @@ public class SpawnManager : MonoBehaviour
     {
         Spawn_Player();
         for (int i = 0; i < bonusSpawns.Length; i++)
-            unoccupied.Add(i);
+            bonusUnoccupied.Add(i);
+        for (int i = 0; i < enemySpawns.Length; i++)
+            enemyUnoccupied.Add(i);
     }
 
     void Update()
@@ -48,7 +53,8 @@ public class SpawnManager : MonoBehaviour
 
     public void Spawn_Enemy()
     {
-        GameObject clone = Instantiate(ResourceLoader.ENEMY, enemySpawns[Random.Range(0, enemySpawns.Length)]);
+        int enemy_id = Occupy(enemyOccupied, enemyUnoccupied);
+        GameObject clone = Instantiate(ResourceLoader.ENEMY, enemySpawns[enemy_id]);
         clone.GetComponent<EvilSnowMan>().Get_Target(target);
     }
 
@@ -56,7 +62,7 @@ public class SpawnManager : MonoBehaviour
     {
         if (timeToSpawn < Time.time)
         {
-            int bonus_id = Bonus_Occupy();
+            int bonus_id = Occupy(bonusOccupied, bonusUnoccupied);
             GameObject bonus = Instantiate(ResourceLoader.BONUS, bonusSpawns[bonus_id]);
             bonus.GetComponent<Bonus>().Connect_With_SpawnManager(this, bonus_id);
             ++activeBonuses;
@@ -64,20 +70,20 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    int Bonus_Occupy()
+    int Occupy(List<int> occupied, List<int> unoccupied)
     {
         int choice = Random.Range(0, unoccupied.Count);
-        int bonus_id = unoccupied[choice];
-        unoccupied.Remove(bonus_id);
-        occupied.Add(bonus_id);
-        return bonus_id;
+        int place_id = unoccupied[choice];
+        unoccupied.Remove(place_id);
+        occupied.Add(place_id);
+        return place_id;
     }
 
     public void Bonus_Respawn(int bonus_id)
     {
         Spawn_Bonus();
         --activeBonuses;
-        occupied.Remove(bonus_id);
-        unoccupied.Add(bonus_id);
+        bonusOccupied.Remove(bonus_id);
+        bonusUnoccupied.Add(bonus_id);
     }
 }
