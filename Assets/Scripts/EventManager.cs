@@ -4,85 +4,43 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
-    [SerializeField] AudioSource intro;
-    [SerializeField] AudioSource easy;
-    [SerializeField] AudioSource normal;
-    [SerializeField] AudioSource hard;
+    [SerializeField] int enemiesOnNormal;
+    [SerializeField] int enemiesOnHard;
+    [SerializeField] SpawnManager sm;
     public static int EASY { get; private set; } = 10;
     public static int NORMAL { get; private set; } = 20;
     public static int HARD { get; private set; } = 50;
     public static int finalScore { get; private set; }
 
-    int score;
+    GameObject player;
 
-    void Start()
-    {
-        intro.Play();
-    }
+    int spawnedEnemies;
+
+    public int score { get; private set; }
 
 
     void Update()
     {
-        Music_Control();
         Difficulty_Control();
     }
 
     void Difficulty_Control()
     {
-
+        if (score > EASY)
+            if (score <= NORMAL)
+                if (spawnedEnemies < enemiesOnNormal)
+                {
+                    sm.Spawn_Enemy();
+                    ++spawnedEnemies;
+                }
+        if(score>NORMAL)
+            if (score <= HARD)
+                if (spawnedEnemies < enemiesOnHard)
+                {
+                    sm.Spawn_Enemy();
+                    ++spawnedEnemies;
+                }
     }
-    void Music_Control()
-    {
-        if (!Music_is_Playing())
-            Play_Random_Music();
-    }
-
-    bool Music_is_Playing()
-    {
-        if (intro.isPlaying | easy.isPlaying | normal.isPlaying | hard.isPlaying)
-            return true;
-        return false;
-    }
-
-    void Play_Random_Music()
-    {
-        intro.Play();
-        if (Random.Range(0, 2) == 1)
-            easy.Play();
-        if (Random.Range(0, 2) == 1)
-            normal.Play();
-        if (Random.Range(0, 2) == 1)
-            hard.Play();
-    }
-
-    void Play_Music()
-    {
-        if (score <= EASY)
-            Play_Easy_Music();
-        else if (score <= NORMAL)
-            Play_Normal_Music();
-        else
-            Play_Hard_Music();
-    }
-
-    void Play_Easy_Music()
-    {
-        intro.Play();
-        easy.Play();
-    }
-
-    void Play_Normal_Music()
-    {
-        Play_Easy_Music();
-        normal.Play();
-    }
-
-    void Play_Hard_Music()
-    {
-        Play_Normal_Music();
-        hard.Play();
-    }
-
     public void Update_Score(int score)
     {
         this.score = score;
@@ -90,5 +48,10 @@ public class EventManager : MonoBehaviour
     public void End_Game(int score)
     {
         finalScore = score;
+    }
+
+    public void Connect_With_Player(GameObject player)
+    {
+        this.player = player;
     }
 }

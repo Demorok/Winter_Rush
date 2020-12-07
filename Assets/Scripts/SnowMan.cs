@@ -14,6 +14,7 @@ public class SnowMan : MonoBehaviour
     Vector2 leftImpulse;
     Vector2 rightImpulse;
 
+    AudioSource audio_player;
     Rigidbody2D snowman;
     EventManager em;
 
@@ -21,9 +22,9 @@ public class SnowMan : MonoBehaviour
 
     void Start()
     {
+        audio_player = gameObject.GetComponent<AudioSource>();
         snowman = transform.GetComponent<Rigidbody2D>();
         Calculate_Impulses();
-
     }
 
     void Update()
@@ -48,16 +49,22 @@ public class SnowMan : MonoBehaviour
     void Player_Controller()
     {
         if (Input.GetKeyDown(up))
-            snowman.AddForce(Vector2.up * impulsePower, ForceMode2D.Impulse);
+            Jump(Vector2.up);
         else if (Input.GetKeyDown(left))
-            snowman.AddForce(leftImpulse * impulsePower, ForceMode2D.Impulse);
+            Jump(leftImpulse);
         else if (Input.GetKeyDown(right))
-            snowman.AddForce(rightImpulse * impulsePower, ForceMode2D.Impulse);
+            Jump(rightImpulse);
+    }
+    void Jump(Vector2 impulse)
+    {
+        snowman.AddForce(impulse * impulsePower, ForceMode2D.Impulse);
+        audio_player.PlayOneShot(ResourceLoader.JUMP);
     }
 
     public void Collect_Bonus(int value)
     {
         this.score += value;
+        audio_player.PlayOneShot(ResourceLoader.COLLECT);
     }
 
     public void Connect_With_EventManager(EventManager em)
